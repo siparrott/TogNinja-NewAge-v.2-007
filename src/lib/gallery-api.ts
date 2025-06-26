@@ -639,11 +639,11 @@ export async function getPublicGalleries(limit?: number): Promise<Gallery[]> {
       updatedAt: gallery.created_at,
       isPasswordProtected: false, // Only public galleries are returned
       downloadEnabled: true, // Will be checked per gallery on access
-      passwordHash: undefined,
+      passwordHash: null,
       watermarkEnabled: false,
       maxDownloadsPerVisitor: undefined,
-      expiresAt: undefined,
-      clientId: undefined,
+      expiresAt: null,
+      clientId: null,
       isFeatured: false,
       sortOrder: 0
     }));
