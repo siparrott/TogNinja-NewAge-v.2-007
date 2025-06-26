@@ -16,11 +16,6 @@ const GalleryPage: React.FC = () => {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [visitorInfo, setVisitorInfo] = useState({
-    email: '',
-    firstName: '',
-    lastName: ''
-  });
 
   useEffect(() => {
     if (slug) {
@@ -161,9 +156,9 @@ const GalleryPage: React.FC = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <Link to="/" className="inline-flex items-center text-purple-600 hover:text-purple-800 mb-6">
+        <Link to="/galleries" className="inline-flex items-center text-purple-600 hover:text-purple-800 mb-6 transition-colors">
           <ArrowLeft size={16} className="mr-1" />
-          Back to Home
+          Zurück zu allen Galerien
         </Link>
         
         {loading && !gallery ? (
@@ -179,8 +174,11 @@ const GalleryPage: React.FC = () => {
         ) : gallery ? (
           <>
             {/* Gallery Header */}
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{gallery.title}</h1>
+            <div className="mb-8 text-center">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">{gallery.title}</h1>
+              {gallery.description && (
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">{gallery.description}</p>
+              )}
             </div>
             
             {/* Authentication Form or Gallery Content */}
@@ -193,37 +191,37 @@ const GalleryPage: React.FC = () => {
             ) : (
               <div className="space-y-6">
                 {/* Action Bar */}
-                <div className="bg-white rounded-lg shadow p-4 flex flex-wrap items-center justify-between gap-4">
+                <div className="bg-white rounded-lg shadow-sm p-4 flex flex-wrap items-center justify-between gap-4 border border-gray-200">
                   <div className="flex items-center space-x-4">
                     <button
                       onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                      className={`inline-flex items-center px-3 py-2 border ${
+                      className={`inline-flex items-center px-4 py-2 border ${
                         showFavoritesOnly
-                          ? 'border-red-300 bg-red-50 text-red-700'
-                          : 'border-gray-300 bg-white text-gray-700'
-                      } rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500`}
+                          ? 'border-red-300 bg-red-50 text-red-700 hover:bg-red-100'
+                          : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                      } rounded-lg shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors`}
                     >
                       <Heart size={16} className={`mr-2 ${showFavoritesOnly ? 'fill-current' : ''}`} />
-                      {showFavoritesOnly ? 'Show All' : 'Show Favorites'}
+                      {showFavoritesOnly ? 'Alle anzeigen' : 'Favoriten anzeigen'}
                     </button>
                     
                     {gallery.downloadEnabled && (
                       <button
                         onClick={handleDownloadAll}
-                        className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                        className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
                       >
                         <Download size={16} className="mr-2" />
-                        Download All
+                        Alle herunterladen
                       </button>
                     )}
                   </div>
                   
                   <button
                     onClick={handleShare}
-                    className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
                   >
                     <Share2 size={16} className="mr-2" />
-                    Share Gallery
+                    Galerie teilen
                   </button>
                 </div>
                 
@@ -239,7 +237,7 @@ const GalleryPage: React.FC = () => {
                     <span>{error}</span>
                   </div>
                 ) : (
-                  <div className="bg-white rounded-lg shadow p-6">
+                  <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
                     <ImageGrid 
                       images={filteredImages} 
                       galleryId={gallery.id}
@@ -251,15 +249,15 @@ const GalleryPage: React.FC = () => {
                     {showFavoritesOnly && filteredImages.length === 0 && (
                       <div className="text-center py-12">
                         <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No Favorites Yet</h3>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Noch keine Favoriten</h3>
                         <p className="text-gray-500">
-                          You haven't favorited any images in this gallery yet.
+                          Sie haben noch keine Bilder zu Ihren Favoriten hinzugefügt.
                         </p>
                         <button
                           onClick={() => setShowFavoritesOnly(false)}
-                          className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
+                          className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors"
                         >
-                          View All Images
+                          Alle Bilder anzeigen
                         </button>
                       </div>
                     )}

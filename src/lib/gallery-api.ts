@@ -609,6 +609,50 @@ export async function downloadGallery(slug: string, token: string): Promise<Blob
   }
 }
 
+// Get all public galleries (no authentication required)
+export async function getPublicGalleries(limit?: number): Promise<Gallery[]> {
+  try {
+    let query = supabase
+      .from('galleries')
+      .select('id, title, slug, description, cover_image, created_at, client_email')
+      .or('password_hash.is.null,password_hash.eq.\'\'')
+      .or('expires_at.is.null,expires_at.gt.now()')
+      .order('created_at', { ascending: false });
+
+    if (limit) {
+      query = query.limit(limit);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    // Format for public consumption
+    return (data || []).map(gallery => ({
+      id: gallery.id,
+      title: gallery.title,
+      slug: gallery.slug,
+      description: gallery.description,
+      coverImage: gallery.cover_image,
+      clientEmail: gallery.client_email,
+      createdAt: gallery.created_at,
+      updatedAt: gallery.created_at,
+      isPasswordProtected: false, // Only public galleries are returned
+      downloadEnabled: true, // Will be checked per gallery on access
+      passwordHash: undefined,
+      watermarkEnabled: false,
+      maxDownloadsPerVisitor: undefined,
+      expiresAt: undefined,
+      clientId: undefined,
+      isFeatured: false,
+      sortOrder: 0
+    }));
+  } catch (error) {
+    console.error('Error fetching public galleries:', error);
+    throw error;
+  }
+}
+
 // HELPER FUNCTIONS
 
 // Hash a password

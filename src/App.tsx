@@ -54,6 +54,7 @@ import BusinessFotoshootingPage from './pages/fotoshootings/BusinessFotoshooting
 import EventFotoshootingPage from './pages/fotoshootings/EventFotoshootingPage';
 import WeddingFotoshootingPage from './pages/fotoshootings/WeddingFotoshootingPage';
 import GalleryPage from './pages/GalleryPage';
+import PublicGalleriesPage from './pages/PublicGalleriesPage';
 import ChatBot from './components/chat/ChatBot';
 
 function App() {
@@ -83,6 +84,7 @@ function App() {
                 <Route path="/order-complete/:id" element={<OrderCompletePage />} />                <Route path="/account" element={<AccountPage />} />
                 <Route path="/account/profile" element={<AccountProfilePage />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/galleries" element={<PublicGalleriesPage />} />
                 <Route path="/gallery/:slug" element={<GalleryPage />} />
                 <Route path="/gallery" element={<ProtectedRoute><GalleryPage /></ProtectedRoute>} />
                 <Route path="/survey-demo" element={<SurveySystemDemoPage />} />

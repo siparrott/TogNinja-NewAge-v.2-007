@@ -307,9 +307,6 @@ export async function createEvent(eventData: CreateEventData): Promise<CalendarE
     }
   }
 
-    if (remindersError) throw remindersError;
-  }
-
   return event;
 }
 

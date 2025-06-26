@@ -5,7 +5,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 
 const Header: React.FC = () => {
-  const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const { language, setLanguage, t } = useLanguage();
@@ -54,16 +53,7 @@ const Header: React.FC = () => {
               {item.label}
             </Link>
           ))}
-          {user && (
-            <Link 
-              to="/gallery" 
-              className={`text-gray-700 hover:text-purple-600 transition-colors ${
-                isActive('/gallery') ? 'text-purple-600 font-semibold' : ''
-              }`}
-            >
-              {t('nav.gallery')}
-            </Link>
-          )}
+
           <button
             onClick={toggleLanguage}
             className="text-gray-700 hover:text-purple-600 transition-colors flex items-center"
@@ -107,17 +97,7 @@ const Header: React.FC = () => {
                 {item.label}
               </Link>
             ))}
-            {user && (
-              <Link 
-                to="/gallery" 
-                className={`py-2 text-gray-700 hover:text-purple-600 transition-colors ${
-                  isActive('/gallery') ? 'text-purple-600 font-semibold' : ''
-                }`}
-                onClick={() => setMenuOpen(false)}
-              >
-                {t('nav.gallery')}
-              </Link>
-            )}            <Link
+            <Link
               to="/admin/dev"
               className="py-2 text-gray-500 hover:text-purple-600 transition-colors flex items-center"
               onClick={() => setMenuOpen(false)}
