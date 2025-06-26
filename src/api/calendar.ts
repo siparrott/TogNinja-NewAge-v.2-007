@@ -234,50 +234,78 @@ export async function getEvent(id: string): Promise<CalendarEvent> {
 export async function createEvent(eventData: CreateEventData): Promise<CalendarEvent> {
   const { data: user } = await supabase.auth.getUser();
   
-  // Create the event
+  // Prepare attendees data for the JSONB column
+  const attendeesData = eventData.attendees || [];
+  
+  // Create the event with attendees in JSONB column
   const { data: event, error: eventError } = await supabase
     .from('calendar_events')
     .insert([{
-      ...eventData,
-      created_by: user.user?.id,
+      title: eventData.title,
+      description: eventData.description,
+      location: eventData.location,
+      start_time: eventData.start_time,
+      end_time: eventData.end_time,
+      all_day: eventData.all_day || false,
       timezone: eventData.timezone || 'UTC',
       status: eventData.status || 'confirmed',
       visibility: eventData.visibility || 'public',
       importance: eventData.importance || 'normal',
+      category_id: eventData.category_id,
+      calendar_id: eventData.calendar_id,
       color: eventData.color || '#3B82F6',
-      all_day: eventData.all_day || false,
       is_recurring: eventData.is_recurring || false,
-      is_bookable: eventData.is_bookable || false
+      recurrence_rule: eventData.recurrence_rule,
+      is_bookable: eventData.is_bookable || false,
+      max_attendees: eventData.max_attendees,
+      attendees: attendeesData, // Store as JSONB
+      created_by: user.user?.id
     }])
     .select()
     .single();
 
-  if (eventError) throw eventError;
+  if (eventError) {
+    console.error('Error creating calendar event:', eventError);
+    throw eventError;
+  }
 
-  // Add attendees if provided
-  if (eventData.attendees && eventData.attendees.length > 0) {
-    const attendeesToInsert = eventData.attendees.map(attendee => ({
-      ...attendee,
-      event_id: event.id
+  // Also add attendees to the separate attendees table if they exist
+  if (attendeesData.length > 0) {
+    const attendeesToInsert = attendeesData.map(attendee => ({
+      event_id: event.id,
+      name: attendee.name || '',
+      email: attendee.email || '',
+      role: attendee.role || 'attendee',
+      status: attendee.status || 'pending'
     }));
 
     const { error: attendeesError } = await supabase
       .from('calendar_event_attendees')
       .insert(attendeesToInsert);
 
-    if (attendeesError) throw attendeesError;
+    if (attendeesError) {
+      console.warn('Warning: Could not insert into attendees table:', attendeesError);
+      // Don't throw error as the main event was created successfully
+    }
   }
 
   // Add reminders if provided
   if (eventData.reminders && eventData.reminders.length > 0) {
     const remindersToInsert = eventData.reminders.map(reminder => ({
-      ...reminder,
-      event_id: event.id
+      event_id: event.id,
+      type: reminder.type,
+      minutes_before: reminder.minutes_before
     }));
 
     const { error: remindersError } = await supabase
       .from('calendar_event_reminders')
       .insert(remindersToInsert);
+
+    if (remindersError) {
+      console.warn('Warning: Could not insert reminders:', remindersError);
+      // Don't throw error as the main event was created successfully
+    }
+  }
 
     if (remindersError) throw remindersError;
   }
