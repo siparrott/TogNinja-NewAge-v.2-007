@@ -1,0 +1,44 @@
+name: Deploy CRM
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run Supabase migrations
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: 
+              npx supabase@1.153.4 db push --db-url "$SUPABASE_DB_URL" --db-password "$SUPABASE_SERVICE_ROLE_KEY"|
+
+
+      - name: Build front-end
+        run: npm run build
+
+      # ----- OPTIONAL: Deploy to Replit or other host -----
+      # Uncomment and configure if you have an API/token to trigger a deploy
+      # - name: Trigger Replit deploy
+      #   env:
+      #     REPLIT_TOKEN: ${{ secrets.REPLIT_TOKEN }}
+      #   run: |
+      #     curl -X POST -H "Authorization: Bearer $REPLIT_TOKEN" \
+      #       -d '{"type":"deploy"}' https://api.replit.com/v0/your-endpoint
+
+      - name: Done
+        run: echo "Deployment workflow finished"
