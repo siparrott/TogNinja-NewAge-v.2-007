@@ -55,6 +55,13 @@ serve(async (req) => {
 });
 
 async function handlePublicRoutes(req: Request, path: string, method: string) {
+  // Get all public galleries
+  if (path === '/public/galleries' && method === 'GET') {
+    const url = new URL(req.url);
+    const limit = url.searchParams.get('limit');
+    return await getPublicGalleries(limit ? parseInt(limit) : undefined);
+  }
+
   // Get gallery metadata
   if (path.match(/^\/public\/galleries\/[^\/]+$/) && method === 'GET') {
     const slug = path.split('/').pop();
@@ -161,6 +168,50 @@ async function handleAdminRoutes(req: Request, path: string, method: string) {
 }
 
 // PUBLIC ROUTE HANDLERS
+
+// Get all public galleries
+async function getPublicGalleries(limit?: number) {
+  try {
+    let query = supabase
+      .from('galleries')
+      .select('id, title, slug, description, cover_image, created_at, client_email')
+      .or('password_hash.is.null,password_hash.eq.\'\'')
+      .or('expires_at.is.null,expires_at.gt.now()')
+      .order('created_at', { ascending: false });
+
+    if (limit) {
+      query = query.limit(limit);
+    }
+
+    const { data: galleries, error } = await query;
+
+    if (error) throw error;
+
+    // Format for public consumption
+    const publicGalleries = galleries.map(gallery => ({
+      id: gallery.id,
+      title: gallery.title,
+      slug: gallery.slug,
+      description: gallery.description,
+      coverImage: gallery.cover_image,
+      clientEmail: gallery.client_email,
+      createdAt: gallery.created_at,
+      isPasswordProtected: false, // Only public galleries are returned
+      downloadEnabled: true // Will be checked per gallery on access
+    }));
+
+    return new Response(
+      JSON.stringify(publicGalleries),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error getting public galleries:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch galleries' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
 
 async function getPublicGallery(slug: string) {
   try {
