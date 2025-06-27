@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Navigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import GalleryAuthForm from '../components/galleries/GalleryAuthForm';
 import ImageGrid from '../components/galleries/ImageGrid';
@@ -27,6 +27,9 @@ const GalleryPage: React.FC = () => {
         setAuthToken(savedToken);
         setIsAuthenticated(true);
       }
+    } else {
+      // No slug provided, stop loading
+      setLoading(false);
     }
   }, [slug]);
 
@@ -152,6 +155,11 @@ const GalleryPage: React.FC = () => {
   const filteredImages = showFavoritesOnly
     ? images.filter(image => image.isFavorite)
     : images;
+
+  // If no slug is provided, redirect to galleries overview
+  if (!slug) {
+    return <Navigate to="/galleries" replace />;
+  }
 
   return (
     <Layout>
