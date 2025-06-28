@@ -1,0 +1,250 @@
+import { 
+  users,
+  blogPosts,
+  crmClients,
+  crmLeads,
+  crmInvoices,
+  galleries,
+  calendarEvents,
+  calendars,
+  messages,
+  stripeCustomers,
+  stripeOrders,
+  type User, 
+  type InsertUser,
+  type BlogPost,
+  type InsertBlogPost,
+  type CrmClient,
+  type InsertCrmClient,
+  type CrmLead,
+  type InsertCrmLead,
+  type CalendarEvent,
+  type InsertCalendarEvent,
+  type Gallery,
+  type InsertGallery
+} from "@shared/schema";
+import { db } from "./db";
+import { eq, and, desc, asc } from "drizzle-orm";
+
+export interface IStorage {
+  // User management
+  getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: string, updates: Partial<User>): Promise<User>;
+  deleteUser(id: string): Promise<void>;
+
+  // Blog management
+  getBlogPosts(published?: boolean): Promise<BlogPost[]>;
+  getBlogPost(id: string): Promise<BlogPost | undefined>;
+  getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  updateBlogPost(id: string, updates: Partial<BlogPost>): Promise<BlogPost>;
+  deleteBlogPost(id: string): Promise<void>;
+
+  // CRM Client management
+  getCrmClients(): Promise<CrmClient[]>;
+  getCrmClient(id: string): Promise<CrmClient | undefined>;
+  createCrmClient(client: InsertCrmClient): Promise<CrmClient>;
+  updateCrmClient(id: string, updates: Partial<CrmClient>): Promise<CrmClient>;
+  deleteCrmClient(id: string): Promise<void>;
+
+  // CRM Lead management
+  getCrmLeads(status?: string): Promise<CrmLead[]>;
+  getCrmLead(id: string): Promise<CrmLead | undefined>;
+  createCrmLead(lead: InsertCrmLead): Promise<CrmLead>;
+  updateCrmLead(id: string, updates: Partial<CrmLead>): Promise<CrmLead>;
+  deleteCrmLead(id: string): Promise<void>;
+
+  // Calendar management
+  getCalendarEvents(calendarId?: string): Promise<CalendarEvent[]>;
+  getCalendarEvent(id: string): Promise<CalendarEvent | undefined>;
+  createCalendarEvent(event: InsertCalendarEvent): Promise<CalendarEvent>;
+  updateCalendarEvent(id: string, updates: Partial<CalendarEvent>): Promise<CalendarEvent>;
+  deleteCalendarEvent(id: string): Promise<void>;
+
+  // Gallery management
+  getGalleries(): Promise<Gallery[]>;
+  getGallery(id: string): Promise<Gallery | undefined>;
+  getGalleryBySlug(slug: string): Promise<Gallery | undefined>;
+  createGallery(gallery: InsertGallery): Promise<Gallery>;
+  updateGallery(id: string, updates: Partial<Gallery>): Promise<Gallery>;
+  deleteGallery(id: string): Promise<void>;
+}
+
+export class DatabaseStorage implements IStorage {
+  // User management
+  async getUser(id: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    return result[0];
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const result = await db.insert(users).values(user).returning();
+    return result[0];
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User> {
+    const result = await db.update(users).set(updates).where(eq(users.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    await db.delete(users).where(eq(users.id, id));
+  }
+
+  // Blog management
+  async getBlogPosts(published?: boolean): Promise<BlogPost[]> {
+    let query = db.select().from(blogPosts);
+    
+    if (published !== undefined) {
+      query = query.where(eq(blogPosts.published, published));
+    }
+    
+    return await query.orderBy(desc(blogPosts.createdAt));
+  }
+
+  async getBlogPost(id: string): Promise<BlogPost | undefined> {
+    const result = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    const result = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
+    return result[0];
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const result = await db.insert(blogPosts).values(post).returning();
+    return result[0];
+  }
+
+  async updateBlogPost(id: string, updates: Partial<BlogPost>): Promise<BlogPost> {
+    const result = await db.update(blogPosts).set(updates).where(eq(blogPosts.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteBlogPost(id: string): Promise<void> {
+    await db.delete(blogPosts).where(eq(blogPosts.id, id));
+  }
+
+  // CRM Client management
+  async getCrmClients(): Promise<CrmClient[]> {
+    return await db.select().from(crmClients).orderBy(desc(crmClients.createdAt));
+  }
+
+  async getCrmClient(id: string): Promise<CrmClient | undefined> {
+    const result = await db.select().from(crmClients).where(eq(crmClients.id, id)).limit(1);
+    return result[0];
+  }
+
+  async createCrmClient(client: InsertCrmClient): Promise<CrmClient> {
+    const result = await db.insert(crmClients).values(client).returning();
+    return result[0];
+  }
+
+  async updateCrmClient(id: string, updates: Partial<CrmClient>): Promise<CrmClient> {
+    const result = await db.update(crmClients).set(updates).where(eq(crmClients.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteCrmClient(id: string): Promise<void> {
+    await db.delete(crmClients).where(eq(crmClients.id, id));
+  }
+
+  // CRM Lead management
+  async getCrmLeads(status?: string): Promise<CrmLead[]> {
+    let query = db.select().from(crmLeads);
+    
+    if (status && status !== 'all') {
+      query = query.where(eq(crmLeads.status, status));
+    }
+    
+    return await query.orderBy(desc(crmLeads.createdAt));
+  }
+
+  async getCrmLead(id: string): Promise<CrmLead | undefined> {
+    const result = await db.select().from(crmLeads).where(eq(crmLeads.id, id)).limit(1);
+    return result[0];
+  }
+
+  async createCrmLead(lead: InsertCrmLead): Promise<CrmLead> {
+    const result = await db.insert(crmLeads).values(lead).returning();
+    return result[0];
+  }
+
+  async updateCrmLead(id: string, updates: Partial<CrmLead>): Promise<CrmLead> {
+    const result = await db.update(crmLeads).set(updates).where(eq(crmLeads.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteCrmLead(id: string): Promise<void> {
+    await db.delete(crmLeads).where(eq(crmLeads.id, id));
+  }
+
+  // Calendar management
+  async getCalendarEvents(calendarId?: string): Promise<CalendarEvent[]> {
+    let query = db.select().from(calendarEvents);
+    
+    if (calendarId) {
+      query = query.where(eq(calendarEvents.calendarId, calendarId));
+    }
+    
+    return await query.orderBy(asc(calendarEvents.startTime));
+  }
+
+  async getCalendarEvent(id: string): Promise<CalendarEvent | undefined> {
+    const result = await db.select().from(calendarEvents).where(eq(calendarEvents.id, id)).limit(1);
+    return result[0];
+  }
+
+  async createCalendarEvent(event: InsertCalendarEvent): Promise<CalendarEvent> {
+    const result = await db.insert(calendarEvents).values(event).returning();
+    return result[0];
+  }
+
+  async updateCalendarEvent(id: string, updates: Partial<CalendarEvent>): Promise<CalendarEvent> {
+    const result = await db.update(calendarEvents).set(updates).where(eq(calendarEvents.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteCalendarEvent(id: string): Promise<void> {
+    await db.delete(calendarEvents).where(eq(calendarEvents.id, id));
+  }
+
+  // Gallery management
+  async getGalleries(): Promise<Gallery[]> {
+    return await db.select().from(galleries).orderBy(desc(galleries.createdAt));
+  }
+
+  async getGallery(id: string): Promise<Gallery | undefined> {
+    const result = await db.select().from(galleries).where(eq(galleries.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getGalleryBySlug(slug: string): Promise<Gallery | undefined> {
+    const result = await db.select().from(galleries).where(eq(galleries.slug, slug)).limit(1);
+    return result[0];
+  }
+
+  async createGallery(gallery: InsertGallery): Promise<Gallery> {
+    const result = await db.insert(galleries).values(gallery).returning();
+    return result[0];
+  }
+
+  async updateGallery(id: string, updates: Partial<Gallery>): Promise<Gallery> {
+    const result = await db.update(galleries).set(updates).where(eq(galleries.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteGallery(id: string): Promise<void> {
+    await db.delete(galleries).where(eq(galleries.id, id));
+  }
+}
+
+export const storage = new DatabaseStorage();
