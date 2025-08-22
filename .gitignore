@@ -91,3 +91,6 @@ Thumbs.db
 # Build artifacts
 server/public/blog-images/
 uploads/
+.env
+.env.*
+*.env
