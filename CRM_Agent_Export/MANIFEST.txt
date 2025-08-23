@@ -1,0 +1,134 @@
+CRM AGENT SYSTEM EXPORT MANIFEST
+================================
+
+Export Date: August 23, 2025
+Source: New Age Fotografie CRM System
+Export Size: Complete CRM Agent System
+
+INCLUDED COMPONENTS:
+===================
+
+📁 /agent/ (Core Agent System)
+├── 74 registered business tools
+├── Self-planning and reasoning engine  
+├── Knowledge base integration (pgvector)
+├── Memory and context management
+├── Security and approval workflows
+├── Tool execution and monitoring
+└── Autonomous task planning
+
+📁 /server/ (Backend Components)
+├── CRM agent API routes
+├── Database connection layer (PostgreSQL/Drizzle)
+├── Security and authentication
+├── Tool registry and execution
+├── Storage abstraction layer
+└── Route handlers for all business functions
+
+📁 /client/ (Frontend Interface)
+├── Chat components for agent interaction
+├── CRM Operations Assistant interface
+├── Real-time communication system
+├── Dashboard integration
+└── User interaction components
+
+📁 /database/ (Data Layer)
+├── Complete PostgreSQL schema
+├── Drizzle ORM configuration
+├── Storage interface definitions
+└── Database connection management
+
+📁 /shared/ (Common Components)
+├── Type definitions and schemas
+├── Shared utilities and helpers
+└── Interface contracts
+
+📁 /config/ (Configuration)
+├── Environment configuration
+├── Package dependencies
+├── Database setup
+└── Build configuration
+
+📁 /docs/ (Documentation)
+├── Installation guide
+├── Tool registry documentation
+├── Architecture overview
+└── Integration instructions
+
+KEY FEATURES INCLUDED:
+=====================
+
+✅ Self-Planning Autonomous Agent
+✅ 74 Registered Business Tools
+✅ Knowledge-Aware System (pgvector)
+✅ Guarded Write Operations
+✅ Real-time Chat Interface
+✅ PostgreSQL Database Integration
+✅ Comprehensive Security Layer
+✅ Audit Logging and Compliance
+✅ Multi-step Task Planning
+✅ Context-Aware Decision Making
+
+CAPABILITIES:
+============
+
+🔍 Search and Discovery
+- Global search across all data
+- Semantic knowledge base search
+- Entity finding and relationship mapping
+
+💼 CRM Operations  
+- Lead management and conversion
+- Client relationship tracking
+- Invoice generation and payment processing
+- Session scheduling and calendar management
+
+📧 Communication
+- Email automation and management
+- Smart auto-replies and drafting
+- Campaign management and analytics
+
+📊 Analytics and Reporting
+- Business intelligence and KPIs
+- Performance metrics and dashboards
+- Data export and visualization
+
+⚙️ Automation
+- Workflow creation and management
+- Triggered actions and scheduling
+- Integration with external services
+
+🔒 Security Features
+- Role-based access control
+- Approval workflows for sensitive operations
+- Comprehensive audit trails
+- Secure API authentication
+
+TECHNICAL SPECIFICATIONS:
+========================
+
+Database: PostgreSQL with Drizzle ORM
+AI Models: Claude 3.5 Sonnet + OpenAI GPT-4o
+Framework: Node.js + Express + React
+Security: Multi-layer authentication and authorization
+Storage: Database + file system integration
+Real-time: WebSocket connections for live updates
+
+INSTALLATION REQUIREMENTS:
+=========================
+
+- Node.js 18+
+- PostgreSQL 14+
+- OpenAI API Key
+- Anthropic API Key
+- 2GB+ RAM for optimal performance
+- SSL certificates for production deployment
+
+This export contains the complete, production-ready CRM agent system
+that was developed for New Age Fotografie. All components are included
+for full functionality and can be adapted for other business use cases.
+
+Total Files: 100+ source files
+Total Size: ~5MB compressed
+Database Tables: 15+ core tables with relationships
+API Endpoints: 50+ REST endpoints for full functionality
