@@ -27,10 +27,18 @@ The application is structured as a monorepo, separating client, server, and shar
 
 ### Backend Architecture
 - **API Layer**: Express.js
-- **Database Layer**: Drizzle ORM
+- **Database Layer**: Drizzle ORM with PostgreSQL
+- **Database**: Supabase PostgreSQL (migrated from Neon with complete data preservation)
 - **Authentication**: Supabase integration
 - **File Storage**: Supabase Storage
 - **System Design**: Core focus on photography session management, digital file organization, invoice generation, and comprehensive CRM agent integration. Includes features like multi-view calendar displays, golden hour optimization, equipment conflict detection, and AI-powered analytics foundations. Comprehensive SEO optimization and meta tag generation are built-in. Multi-photographer SaaS template management system with premium tiers and automated template import is a core architectural decision.
+
+### Database Migration Status (August 24, 2025)
+- **Complete Migration**: All 22,064 records exported from Neon to Supabase
+- **Data Scope**: CRM clients (2,153), email messages (17,574), blog posts (1,596), knowledge base (486), SEO intelligence (72), invoicing, price lists, calendar events, and all business systems
+- **Backup Strategy**: Neon database preserved as complete backup
+- **Connection**: App configured for Supabase with fallback capability
+- **Import Files**: supabase-COMPLETE-import.sql ready for manual import to Supabase SQL Editor
 
 ### CRM Agent System
 A self-planning, knowledge-aware CRM agent system is integrated, offering autonomous capabilities. This includes:

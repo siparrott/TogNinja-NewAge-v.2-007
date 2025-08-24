@@ -1,0 +1,127 @@
+{
+  "exportDate": "2025-08-24T15:23:15.899Z",
+  "totalTables": 24,
+  "totalRecords": 2610,
+  "tables": [
+    {
+      "tableName": "crm_clients",
+      "recordCount": 2153,
+      "headers": 16
+    },
+    {
+      "tableName": "crm_leads",
+      "recordCount": 2,
+      "headers": 15
+    },
+    {
+      "tableName": "crm_messages",
+      "recordCount": 224,
+      "headers": 11
+    },
+    {
+      "tableName": "crm_invoices",
+      "recordCount": 4,
+      "headers": 14
+    },
+    {
+      "tableName": "crm_invoice_items",
+      "recordCount": 2,
+      "headers": 9
+    },
+    {
+      "tableName": "photography_sessions",
+      "recordCount": 9,
+      "headers": 55
+    },
+    {
+      "tableName": "price_list",
+      "recordCount": 6,
+      "headers": 10
+    },
+    {
+      "tableName": "voucher_products",
+      "recordCount": 3,
+      "headers": 23
+    },
+    {
+      "tableName": "discount_coupons",
+      "recordCount": 7,
+      "headers": 21
+    },
+    {
+      "tableName": "print_products",
+      "recordCount": 12,
+      "headers": 9
+    },
+    {
+      "tableName": "galleries",
+      "recordCount": 1,
+      "headers": 18
+    },
+    {
+      "tableName": "gallery_orders",
+      "recordCount": 3,
+      "headers": 9
+    },
+    {
+      "tableName": "gallery_order_items",
+      "recordCount": 4,
+      "headers": 7
+    },
+    {
+      "tableName": "blog_posts",
+      "recordCount": 15,
+      "headers": 17
+    },
+    {
+      "tableName": "website_profiles",
+      "recordCount": 2,
+      "headers": 8
+    },
+    {
+      "tableName": "seo_intel",
+      "recordCount": 72,
+      "headers": 6
+    },
+    {
+      "tableName": "users",
+      "recordCount": 2,
+      "headers": 9
+    },
+    {
+      "tableName": "studios",
+      "recordCount": 2,
+      "headers": 10
+    },
+    {
+      "tableName": "studio_integrations",
+      "recordCount": 4,
+      "headers": 16
+    },
+    {
+      "tableName": "knowledge_base",
+      "recordCount": 5,
+      "headers": 11
+    },
+    {
+      "tableName": "openai_assistants",
+      "recordCount": 1,
+      "headers": 11
+    },
+    {
+      "tableName": "ai_policies",
+      "recordCount": 4,
+      "headers": 10
+    },
+    {
+      "tableName": "agent_action_log",
+      "recordCount": 72,
+      "headers": 13
+    },
+    {
+      "tableName": "agent_policies",
+      "recordCount": 1,
+      "headers": 11
+    }
+  ]
+}

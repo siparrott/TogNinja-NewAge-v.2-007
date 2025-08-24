@@ -5,6 +5,13 @@ import * as schema from "../shared/schema.js";
 // Use Supabase database URL as primary connection
 const databaseUrl = process.env.SUPABASE_DATABASE_URL || process.env.DATABASE_URL;
 
+// Set correct Supabase URL if not in environment
+if (!process.env.SUPABASE_DATABASE_URL && !process.env.DATABASE_URL) {
+  // Fallback to working Supabase connection
+  const supabaseUrl = "postgres://postgres:mnYFVnA6t4S0HCGz@db.gtnwccyxwrevfnbkjvzm.supabase.co:6543/postgres";
+  process.env.SUPABASE_DATABASE_URL = supabaseUrl;
+}
+
 if (!databaseUrl) {
   throw new Error(
     "SUPABASE_DATABASE_URL or DATABASE_URL must be set. Did you forget to provision a database?",
