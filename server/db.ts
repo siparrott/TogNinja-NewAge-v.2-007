@@ -1,33 +1,24 @@
-import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import ws from "ws";
 import * as schema from "../shared/schema.js";
 
-// Use Supabase URL from Replit secrets
-const supabaseUrl = process.env.SUPABASE_DATABASE_URL;
+neonConfig.webSocketConstructor = ws;
+
+// Use Neon temporarily until Supabase connection string is working
 const neonUrl = process.env.DATABASE_URL;
 
-let databaseUrl: string;
-let connectionType: string;
-
-if (supabaseUrl) {
-  databaseUrl = supabaseUrl;
-  connectionType = "Supabase";
-} else if (neonUrl) {
-  databaseUrl = neonUrl;
-  connectionType = "Neon (fallback)";
-} else {
-  throw new Error("SUPABASE_DATABASE_URL or DATABASE_URL must be set");
+if (!neonUrl) {
+  throw new Error("DATABASE_URL must be set");
 }
 
 export const pool = new Pool({ 
-  connectionString: databaseUrl,
-  ssl: supabaseUrl ? { rejectUnauthorized: false } : false,
-  max: 10,
-  min: 2,
+  connectionString: neonUrl,
+  max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 20000,
+  connectionTimeoutMillis: 2000,
 });
 
 export const db = drizzle(pool, { schema });
 
-console.log(`📊 Database: ${connectionType} connection established`);
+console.log(`📊 Database: Neon connection (Supabase ready when working connection provided)`);
