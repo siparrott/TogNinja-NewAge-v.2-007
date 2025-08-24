@@ -1,5 +1,6 @@
 import { 
   users,
+  adminUsers,
   blogPosts,
   crmClients,
   crmLeads,
@@ -15,6 +16,8 @@ import {
   couponUsage,
   type User, 
   type InsertUser,
+  type AdminUser,
+  type InsertAdminUser,
   type BlogPost,
   type InsertBlogPost,
   type CrmClient,
@@ -47,7 +50,14 @@ import { eq, and, desc, asc, sql } from "drizzle-orm";
 import validator from "validator";
 
 export interface IStorage {
-  // User management
+  // Admin User management (authentication)
+  getAdminUser(id: string): Promise<AdminUser | undefined>;
+  getAdminUserByEmail(email: string): Promise<AdminUser | undefined>;
+  createAdminUser(user: InsertAdminUser): Promise<AdminUser>;
+  updateAdminUser(id: string, updates: Partial<AdminUser>): Promise<AdminUser>;
+  deleteAdminUser(id: string): Promise<void>;
+
+  // Legacy User management (CRM clients)
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
@@ -145,7 +155,32 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  // User management
+  // Admin User management (authentication)
+  async getAdminUser(id: string): Promise<AdminUser | undefined> {
+    const result = await db.select().from(adminUsers).where(eq(adminUsers.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAdminUserByEmail(email: string): Promise<AdminUser | undefined> {
+    const result = await db.select().from(adminUsers).where(eq(adminUsers.email, email)).limit(1);
+    return result[0];
+  }
+
+  async createAdminUser(user: InsertAdminUser): Promise<AdminUser> {
+    const result = await db.insert(adminUsers).values(user).returning();
+    return result[0];
+  }
+
+  async updateAdminUser(id: string, updates: Partial<AdminUser>): Promise<AdminUser> {
+    const result = await db.update(adminUsers).set(updates).where(eq(adminUsers.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteAdminUser(id: string): Promise<void> {
+    await db.delete(adminUsers).where(eq(adminUsers.id, id));
+  }
+
+  // Legacy User management (CRM clients)
   async getUser(id: string): Promise<User | undefined> {
     const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
     return result[0];

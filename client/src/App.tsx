@@ -23,6 +23,7 @@ import AccountProfilePage from './pages/AccountProfilePage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminDashboardPageDev from './pages/admin/AdminDashboardPageDev';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
+import NeonAdminLoginPage from './pages/admin/NeonAdminLoginPage';
 import AdminLeadsPage from './pages/admin/AdminLeadsPage';
 import AdminVoucherSalesPageV3 from './pages/admin/AdminVoucherSalesPageV3';
 import AdminClientsPage from './pages/admin/ClientsPage';
@@ -115,6 +116,7 @@ function App() {
                 
                 {/* Admin routes */}
                 <Route path="/admin/login" element={<AdminLoginPage />} />
+                <Route path="/admin/neon-login" element={<NeonAdminLoginPage />} />
                 <Route path="/admin/dev" element={<AdminDashboardPageDev />} />
                 <Route 
                   path="/admin" 

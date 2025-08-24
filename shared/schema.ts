@@ -15,7 +15,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
 
-// Auth Users table (core authentication)
+// Legacy Users table (for existing CRM clients)
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").unique().notNull(),
@@ -93,13 +93,18 @@ export const templateDefinitions = pgTable("template_definitions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Admin Users table
+// Admin Users table (authentication for backend access)  
 export const adminUsers = pgTable("admin_users", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").references(() => users.id).notNull(),
-  isAdmin: boolean("is_admin").default(true),
-  permissions: jsonb("permissions"),
+  email: text("email").unique().notNull(),
+  passwordHash: text("password_hash").notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  role: text("role").default("admin"), // admin, user
+  status: text("status").default("active"), // active, inactive
+  lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Blog Posts
@@ -887,6 +892,22 @@ export const insertOpenaiAssistantSchema = createInsertSchema(openaiAssistants, 
 
 export type InsertOpenaiAssistant = z.infer<typeof insertOpenaiAssistantSchema>;
 export type OpenaiAssistant = typeof openaiAssistants.$inferSelect;
+
+// Admin User schemas
+export const insertAdminUserSchema = createInsertSchema(adminUsers, {
+  email: z.string().email("Valid email is required"),
+  passwordHash: z.string().min(1, "Password hash is required"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+}).omit({ 
+  id: true, 
+  createdAt: true, 
+  updatedAt: true,
+  lastLoginAt: true
+});
+
+export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
+export type AdminUser = typeof adminUsers.$inferSelect;
 
 // ========== MULTI-STUDIO AI OPERATOR TABLES ==========
 

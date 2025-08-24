@@ -36,6 +36,8 @@ import { jsPDF } from 'jspdf';
 import OpenAI from 'openai';
 import websiteWizardRoutes from './routes/website-wizard';
 import galleryShopRouter from './routes/gallery-shop';
+import authRoutes from './routes/auth';
+import { sessionConfig, requireAuth, requireAdmin } from './auth';
 
 // Modern PDF invoice generator with actual logo and all required sections
 async function generateModernInvoicePDF(invoice: any, client: any): Promise<Buffer> {
@@ -899,6 +901,12 @@ async function importEmailsFromIMAP(config: {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Apply session middleware
+  app.use(sessionConfig);
+
+  // Register authentication routes
+  app.use('/api/auth', authRoutes);
+
   // Health check endpoint for deployment
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
