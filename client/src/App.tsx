@@ -73,6 +73,7 @@ import GalleryPage from './pages/GalleryPage';
 import PublicGalleriesPage from './pages/PublicGalleriesPage';
 import ChatBot from './components/chat/ChatBot';
 import { GalleryShopTest } from './pages/GalleryShopTest';
+import DownloadDataPage from './pages/DownloadDataPage';
 
 function App() {
   return (
@@ -110,6 +111,7 @@ function App() {
                 <Route path="/gallery" element={<ProtectedRoute><GalleryPage /></ProtectedRoute>} />
                 <Route path="/survey-demo" element={<SurveySystemDemoPage />} />
                 <Route path="/survey/:id" element={<SurveyTakingPage />} />
+                <Route path="/download-data" element={<DownloadDataPage />} />
                 
                 {/* Admin routes */}
                 <Route path="/admin/login" element={<AdminLoginPage />} />
