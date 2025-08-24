@@ -2,7 +2,10 @@ import cron from "node-cron";
 import { sendEmail } from "../../agent/integrations/email";
 import { createClient } from "@supabase/supabase-js";
 
-const sb = createClient(process.env.VITE_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://jiqwpnriknvlziqprqeg.supabase.co';
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0bndjY3l4d3JldmZuYmtqdnptIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDI0ODAxOCwiZXhwIjoyMDY1ODI0MDE4fQ.8c2gwIf7vLGmuEgMOvKWbcFviaC39hAR-qqiDYQEYpw';
+
+const sb = createClient(supabaseUrl, serviceKey);
 
 /* daily report 07:00 */
 cron.schedule("0 7 * * *", async () => {
