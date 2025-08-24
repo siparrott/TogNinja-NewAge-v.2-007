@@ -5,11 +5,11 @@ import * as schema from "../shared/schema.js";
 
 neonConfig.webSocketConstructor = ws;
 
-// Use Neon temporarily until Supabase connection string is working
+// Neon-only database connection (Supabase removed)
 const neonUrl = process.env.DATABASE_URL;
 
 if (!neonUrl) {
-  throw new Error("DATABASE_URL must be set");
+  throw new Error("DATABASE_URL must be set - provide your Neon connection string");
 }
 
 export const pool = new Pool({ 
@@ -21,4 +21,4 @@ export const pool = new Pool({
 
 export const db = drizzle(pool, { schema });
 
-console.log(`📊 Database: Neon connection (Supabase ready when working connection provided)`);
+console.log(`📊 Database: Neon connection (Supabase-free architecture)`);

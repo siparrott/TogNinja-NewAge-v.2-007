@@ -24,7 +24,7 @@ import {
   crmMessages
 } from "@shared/schema";
 import { z } from "zod";
-import { createClient } from '@supabase/supabase-js';
+// Supabase removed - using Neon database only
 import Imap from 'imap';
 import { simpleParser } from 'mailparser';
 import multer from 'multer';
@@ -1858,123 +1858,60 @@ Bitte versuchen Sie es später noch einmal.`;
         return res.status(404).json({ error: "Gallery not found" });
       }
 
-      // Create Supabase client (using hardcoded values from client config)
-      const supabaseUrl = 'https://gtnwccyxwrevfnbkjvzm.supabase.co';
-      const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0bndjY3l4d3JldmZuYmtqdnptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDgwMTgsImV4cCI6MjA2NTgyNDAxOH0.MiOeCq2NCD969D_SXQ1wAlheSvRY5h04cUnV0XNuOrc';
-      
-      const supabase = createClient(supabaseUrl, supabaseAnonKey);
+      // Query Neon database for gallery images
+      const galleryImages = await storage.getGalleryImages(gallery.id);
 
-      // Query Supabase for gallery images (first try database)
-      const { data: supabaseImages, error: supabaseError } = await supabase
-        .from('gallery_images')
-        .select('*')
-        .eq('gallery_id', gallery.id)
-        .order('order_index');
-
-      // If no database records found, fetch actual uploaded files from storage
-      if (!supabaseImages || supabaseImages.length === 0) {
-        console.log('No database records found, checking Supabase Storage...');
+      // If no database records found, check local file storage
+      if (!galleryImages || galleryImages.length === 0) {
+        console.log('No database records found, checking local file storage...');
         
-        // First check if this gallery has its own folder in the galleries bucket
-        const { data: gallerySpecificFiles, error: galleryError } = await supabase.storage
-          .from('galleries')
-          .list(`${gallery.id}/display`, { limit: 100 });
+        // Check for gallery files in public/uploads/galleries
+        const fs = await import('fs/promises');
+        const path = await import('path');
         
-        if (!galleryError && gallerySpecificFiles && gallerySpecificFiles.length > 0) {
-          console.log(`Found ${gallerySpecificFiles.length} gallery-specific files`);
+        try {
+          const galleryPath = path.join(process.cwd(), 'public', 'uploads', 'galleries', gallery.id.toString());
+          const files = await fs.readdir(galleryPath).catch(() => []);
           
-          // Convert gallery-specific files to gallery images format
-          const galleryImages = gallerySpecificFiles
-            .filter(file => file.metadata && file.metadata.size > 0) // Only actual files, not folders
-            .map((file, index) => {
-              const { data: { publicUrl } } = supabase.storage
-                .from('galleries')
-                .getPublicUrl(`${gallery.id}/display/${file.name}`);
-              
-              return {
-                id: `gallery-${file.name}`,
-                galleryId: gallery.id,
-                filename: file.name,
-                originalUrl: publicUrl,
-                displayUrl: publicUrl,
-                thumbUrl: publicUrl,
-                title: `Image ${index + 1}`,
-                description: `Uploaded image: ${file.name}`,
-                orderIndex: index,
-                createdAt: file.updated_at || new Date().toISOString(),
-                sizeBytes: file.metadata?.size || 0,
-                contentType: file.metadata?.mimetype || 'image/jpeg',
-                capturedAt: null
-              };
-            })
-            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Most recent first
-          
-          res.json(galleryImages);
-          return;
-        }
-        
-        // If no gallery-specific files found, check the shared images folder but filter by gallery relationship
-        const { data: storageFiles, error: storageError } = await supabase.storage
-          .from('images')
-          .list('galleries/images', { limit: 100 });
-        
-        if (storageError) {
-          console.error('Failed to fetch from Supabase Storage:', storageError);
-        } else if (storageFiles && storageFiles.length > 0) {
-          console.log(`Found ${storageFiles.length} files in shared storage`);
-          
-          // For Pantling Family gallery, show a subset of the uploaded images
-          // This is a temporary solution until proper gallery-specific organization is implemented
-          if (gallery.slug === 'pantling-family') {
-            // Show only the most recent landscape photos for this gallery
-            const selectedImages = storageFiles
-              .filter(file => file.metadata && file.metadata.size > 0)
-              .filter(file => {
-                // Select specific images for the Pantling Family gallery based on size and date
-                return file.metadata.size > 100000 && ( // Larger files (likely actual photos)
-                       file.name.includes('1751121') || // Files from specific upload session
-                       file.name.includes('1751126') || // Recent uploads
-                       file.name.includes('vip690lwu') || // Specific landscape image
-                       file.name.includes('gde3zjzvvy8')); // Another landscape image
-              })
-              .slice(0, 6) // Limit to 6 images for this gallery
-              .map((file, index) => {
-                const { data: { publicUrl } } = supabase.storage
-                  .from('images')
-                  .getPublicUrl(`galleries/images/${file.name}`);
-                
-                return {
-                  id: `pantling-${file.name}`,
-                  galleryId: gallery.id,
-                  filename: file.name,
-                  originalUrl: publicUrl,
-                  displayUrl: publicUrl,
-                  thumbUrl: publicUrl,
-                  title: `Family Photo ${index + 1}`,
-                  description: `Beautiful family moment captured`,
-                  orderIndex: index,
-                  createdAt: file.updated_at || new Date().toISOString(),
-                  sizeBytes: file.metadata?.size || 0,
-                  contentType: file.metadata?.mimetype || 'image/jpeg',
-                  capturedAt: null
-                };
-              })
-              .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Most recent first
+          if (files.length > 0) {
+            console.log(`Found ${files.length} local gallery files`);
             
-            if (selectedImages.length > 0) {
-              console.log(`Showing ${selectedImages.length} selected images for Pantling Family gallery`);
-              res.json(selectedImages);
-              return;
-            }
+            const localGalleryImages = await Promise.all(
+              files
+                .filter(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file))
+                .map(async (file, index) => {
+                  const filePath = path.join(galleryPath, file);
+                  const stats = await fs.stat(filePath).catch(() => null);
+                  
+                  return {
+                    id: `local-${file}`,
+                    galleryId: gallery.id,
+                    filename: file,
+                    originalUrl: `/uploads/galleries/${gallery.id}/${file}`,
+                    displayUrl: `/uploads/galleries/${gallery.id}/${file}`,
+                    thumbUrl: `/uploads/galleries/${gallery.id}/${file}`,
+                    title: `Image ${index + 1}`,
+                    description: `Local image: ${file}`,
+                    orderIndex: index,
+                    createdAt: stats?.birthtime?.toISOString() || new Date().toISOString(),
+                    sizeBytes: stats?.size || 0,
+                    contentType: `image/${path.extname(file).slice(1)}`,
+                    capturedAt: null
+                  };
+                })
+            );
+            
+            res.json(localGalleryImages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+            return;
           }
-          
-          // For other galleries, don't show shared images to maintain gallery-specific display
-          console.log('Skipping shared images for other galleries to maintain separation');
+        } catch (error) {
+          console.log('Error checking local gallery files:', error);
         }
+        
       }
       
       // If still no images found, use fallback sample images
-      if (!supabaseImages || supabaseImages.length === 0) {
+      if (!galleryImages || galleryImages.length === 0) {
         const sampleImages = [
           {
             id: 'sample-1',
@@ -2057,24 +1994,8 @@ Bitte versuchen Sie es später noch einmal.`;
         return;
       }
       
-      // Map Supabase images to expected format
-      const images = supabaseImages.map((img: any) => ({
-        id: img.id,
-        galleryId: img.gallery_id,
-        filename: img.filename,
-        originalUrl: img.original_url,
-        displayUrl: img.display_url || img.original_url,
-        thumbUrl: img.thumb_url || img.original_url,
-        title: img.title,
-        description: img.description,
-        orderIndex: img.order_index || 0,
-        createdAt: img.created_at || img.uploaded_at,
-        sizeBytes: img.size_bytes || 0,
-        contentType: img.content_type || 'image/jpeg',
-        capturedAt: img.captured_at
-      }));
-      
-      res.json(images);
+      // Return gallery images from Neon database
+      res.json(galleryImages);
     } catch (error) {
       console.error("Error fetching gallery images:", error);
       res.status(500).json({ error: "Internal server error" });

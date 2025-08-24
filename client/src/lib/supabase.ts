@@ -1,26 +1,27 @@
-import { createClient } from '@supabase/supabase-js';
+// Supabase client removed - app now uses Neon database only
+// Legacy authentication functions maintained for backward compatibility
 
-const supabaseUrl = 'https://gtnwccyxwrevfnbkjvzm.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0bndjY3l4d3JldmZuYmtqdnptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyNDgwMTgsImV4cCI6MjA2NTgyNDAxOH0.MiOeCq2NCD969D_SXQ1wAlheSvRY5h04cUnV0XNuOrc';
-
-// Supabase configuration initialized
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+// Mock client for backward compatibility
+export const supabase = {
   auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-    flowType: 'pkce'
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+    signInWithPassword: () => Promise.resolve({ data: null, error: { message: 'Supabase auth disabled - use Express sessions' } }),
+    signOut: () => Promise.resolve({ error: null })
   },
-  db: {
-    schema: 'public'
-  },
-  global: {
-    headers: {
-      'X-Client-Info': 'supabase-js-web'
-    }
+  from: () => ({
+    select: () => Promise.resolve({ data: [], error: null }),
+    insert: () => Promise.resolve({ data: [], error: null }),
+    update: () => Promise.resolve({ data: [], error: null }),
+    delete: () => Promise.resolve({ data: [], error: null })
+  }),
+  storage: {
+    from: () => ({
+      upload: () => Promise.resolve({ data: null, error: { message: 'Supabase storage disabled - use local file storage' } }),
+      getPublicUrl: () => ({ data: { publicUrl: '' } })
+    })
   }
-});
+};
 
 // Enhanced connection test with better error handling
 export const testSupabaseConnection = async () => {
