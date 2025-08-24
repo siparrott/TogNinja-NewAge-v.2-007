@@ -1,0 +1,12 @@
+column_name,data_type,is_nullable,column_default
+id,uuid,NO,gen_random_uuid()
+sender_name,text,NO,
+sender_email,text,NO,
+subject,text,NO,
+content,text,NO,
+status,text,YES,'unread'::text
+client_id,uuid,YES,
+assigned_to,uuid,YES,
+replied_at,timestamp with time zone,YES,
+created_at,timestamp with time zone,YES,now()
+updated_at,timestamp with time zone,YES,now()

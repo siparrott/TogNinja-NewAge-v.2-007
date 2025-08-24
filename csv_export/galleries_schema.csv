@@ -1,0 +1,19 @@
+column_name,data_type,is_nullable,column_default
+id,uuid,NO,gen_random_uuid()
+title,text,NO,
+slug,text,NO,
+description,text,YES,
+cover_image,text,YES,
+is_public,boolean,YES,true
+is_password_protected,boolean,YES,false
+password,text,YES,
+client_id,uuid,YES,
+created_by,uuid,YES,
+sort_order,integer,YES,0
+created_at,timestamp without time zone,YES,now()
+updated_at,timestamp without time zone,YES,now()
+client_email,text,YES,
+download_enabled,boolean,YES,true
+watermark_enabled,boolean,YES,false
+is_featured,boolean,YES,false
+expires_at,timestamp with time zone,YES,

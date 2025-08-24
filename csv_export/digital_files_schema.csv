@@ -1,0 +1,39 @@
+column_name,data_type,is_nullable,column_default
+id,uuid,NO,gen_random_uuid()
+filename,text,NO,
+original_filename,text,NO,
+file_size,bigint,NO,
+mime_type,text,NO,
+file_path,text,NO,
+client_id,uuid,YES,
+client_name,text,YES,
+booking_id,uuid,YES,
+category,text,NO,'other'::text
+is_public,boolean,YES,false
+uploaded_by,text,NO,
+width,integer,YES,
+height,integer,YES,
+camera_make,text,YES,
+camera_model,text,YES,
+lens_model,text,YES,
+focal_length,text,YES,
+aperture,text,YES,
+shutter_speed,text,YES,
+iso,integer,YES,
+captured_at,timestamp with time zone,YES,
+keywords,ARRAY,YES,
+copyright,text,YES,
+description,text,YES,
+rating,integer,YES,
+color_profile,text,YES,
+is_favorite,boolean,YES,false
+view_count,integer,YES,0
+download_count,integer,YES,0
+location,text,YES,
+city,text,YES,
+state,text,YES,
+country,text,YES,
+creator,text,YES,
+creator_title,text,YES,
+created_at,timestamp with time zone,YES,now()
+updated_at,timestamp with time zone,YES,now()

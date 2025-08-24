@@ -1,0 +1,28 @@
+column_name,data_type,is_nullable,column_default
+id,uuid,NO,gen_random_uuid()
+voucher_code,text,NO,
+product_id,uuid,YES,
+purchaser_name,text,NO,
+purchaser_email,text,NO,
+purchaser_phone,text,YES,
+recipient_name,text,YES,
+recipient_email,text,YES,
+original_amount,numeric,NO,
+discount_amount,numeric,YES,0
+final_amount,numeric,NO,
+payment_method,text,YES,
+payment_status,text,YES,'pending'::text
+payment_id,text,YES,
+gift_message,text,YES,
+delivery_date,date,YES,
+delivery_method,text,YES,
+purchase_date,date,YES,
+expiry_date,date,YES,
+redemption_date,date,YES,
+redemption_notes,text,YES,
+status,text,YES,
+refund_amount,numeric,YES,
+refund_date,date,YES,
+refund_reason,text,YES,
+created_at,timestamp without time zone,YES,now()
+updated_at,timestamp without time zone,YES,now()

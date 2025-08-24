@@ -1,0 +1,36 @@
+Database CSV Export Summary
+Generated: 2025-08-24T11:25:21.382Z
+Tables Exported: 6
+Total Records: 2186
+
+Files Created:
+- crm_clients.csv
+- blog_posts.csv
+- photography_sessions.csv
+- knowledge_base.csv
+- users.csv
+- crm_leads.csv
+- crm_invoices_schema.csv
+- crm_messages_schema.csv
+- voucher_products_schema.csv
+- voucher_sales_schema.csv
+- galleries_schema.csv
+- digital_files_schema.csv
+- calendar_events_schema.csv
+
+Data Summary:
+- crm_clients.csv: Your complete client database (2,153+ records)
+- blog_posts.csv: Published blog content (15 posts)
+- photography_sessions.csv: Scheduled shoots (9 sessions)
+- users.csv: Admin accounts (2 users)
+- knowledge_base.csv: CRM agent learning data (5 entries)
+- crm_leads.csv: Sales prospects (2 leads)
+
+Schema Files (for empty tables):
+- Table structure definitions for future reference
+- Column names, data types, and constraints
+
+Usage:
+- Import CSV files into Excel, Google Sheets, or any database
+- Use schema files to recreate table structures
+- Complete backup of your business data

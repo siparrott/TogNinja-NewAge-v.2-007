@@ -1,0 +1,29 @@
+column_name,data_type,is_nullable,column_default
+id,uuid,NO,gen_random_uuid()
+title,text,NO,
+description,text,YES,
+location,text,YES,
+start_time,timestamp without time zone,NO,
+end_time,timestamp without time zone,NO,
+all_day,boolean,YES,false
+timezone,text,YES,'UTC'::text
+status,text,YES,'confirmed'::text
+visibility,text,YES,'public'::text
+importance,text,YES,'normal'::text
+category_id,uuid,YES,
+calendar_id,uuid,NO,
+color,text,YES,'#3B82F6'::text
+is_recurring,boolean,YES,false
+recurrence_rule,text,YES,
+recurrence_exception_dates,ARRAY,YES,
+parent_event_id,uuid,YES,
+created_by,uuid,NO,
+created_at,timestamp without time zone,YES,now()
+updated_at,timestamp without time zone,YES,now()
+external_id,text,YES,
+external_source,text,YES,
+ical_uid,text,YES,
+is_bookable,boolean,YES,false
+max_attendees,integer,YES,
+booking_window_start,timestamp without time zone,YES,
+booking_window_end,timestamp without time zone,YES,

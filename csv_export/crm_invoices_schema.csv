@@ -1,0 +1,15 @@
+column_name,data_type,is_nullable,column_default
+id,uuid,NO,gen_random_uuid()
+invoice_number,text,NO,
+client_id,uuid,NO,
+issue_date,date,NO,
+due_date,date,NO,
+subtotal,numeric,NO,
+tax_amount,numeric,YES,'0'::numeric
+total,numeric,NO,
+status,text,YES,'draft'::text
+notes,text,YES,
+terms_and_conditions,text,YES,
+created_by,uuid,YES,
+created_at,timestamp without time zone,YES,now()
+updated_at,timestamp without time zone,YES,now()
