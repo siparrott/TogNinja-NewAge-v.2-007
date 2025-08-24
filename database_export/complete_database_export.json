@@ -1,0 +1,112 @@
+{
+  "timestamp": "2025-08-24T08:56:23.451Z",
+  "source": "Neon Database",
+  "export_type": "Complete Migration Export",
+  "tables": {
+    "users": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "clients": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "leads": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "invoices": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "invoice_items": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "invoice_payments": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "photography_sessions": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "digital_files": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "blog_posts": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "email_campaigns": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "questionnaires": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "questionnaire_responses": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "voucher_products": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "voucher_sales": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "voucher_redemptions": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "website_profiles": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "agent_interactions": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "knowledge_base": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "automation_workflows": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "gallery_orders": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    },
+    "inbox_messages": {
+      "rowCount": 0,
+      "data": [],
+      "error": "All attempts to open a WebSocket to connect to the database failed. Please refer to https://github.com/neondatabase/serverless/blob/main/CONFIG.md#websocketconstructor-typeof-websocket--undefined. Details: fetch failed"
+    }
+  }
+}
