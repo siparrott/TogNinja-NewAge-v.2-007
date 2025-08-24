@@ -41,7 +41,8 @@ export default function NeonAdminLoginPage() {
       if (result.success) {
         // Store user info in localStorage for persistence
         localStorage.setItem('admin_user', JSON.stringify(result.user));
-        navigate('/admin/dashboard');
+        // Force reload to update auth context
+        window.location.href = '/admin/dashboard';
       } else {
         setError(result.error || 'Login failed');
       }

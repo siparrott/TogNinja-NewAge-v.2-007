@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
 import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
+import { NeonAuthProvider } from './context/NeonAuthContext';
 import { CartProvider } from './context/CartContext';
 import { LanguageProvider } from './context/LanguageContext';
 import HomePage from './pages/HomePage';
@@ -63,6 +64,7 @@ import AutoBlogGeneratorFixed from './pages/admin/AutoBlogGeneratorFixed';
 import TestPage from './pages/admin/TestPage';
 import WebsiteWizard from './pages/admin/WebsiteWizard';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import NeonProtectedRoute from './components/auth/NeonProtectedRoute';
 import CartPage from './pages/CartPage';
 import FamilyGutscheinPage from './pages/gutschein/FamilyGutscheinPage';
 import NewbornGutscheinPage from './pages/gutschein/NewbornGutscheinPage';
@@ -80,9 +82,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <AppProvider>
-          <CartProvider>
-            <LanguageProvider>
+        <NeonAuthProvider>
+          <AppProvider>
+            <CartProvider>
+              <LanguageProvider>
               <Router>
               <Routes>
                 <Route path="/" element={<HomePage />} />
@@ -121,17 +124,17 @@ function App() {
                 <Route 
                   path="/admin" 
                   element={
-                    <ProtectedRoute>
+                    <NeonProtectedRoute>
                       <AdminDashboardPage />
-                    </ProtectedRoute>
+                    </NeonProtectedRoute>
                   } 
                 />
                 <Route 
                   path="/admin/dashboard" 
                   element={
-                    <ProtectedRoute>
+                    <NeonProtectedRoute>
                       <AdminDashboardPage />
-                    </ProtectedRoute>
+                    </NeonProtectedRoute>
                   } 
                 />
                 <Route 
@@ -448,10 +451,11 @@ function App() {
               </Routes>
               <ChatBot />
             </Router>
-          </LanguageProvider>
-        </CartProvider>
-      </AppProvider>
-    </AuthProvider>
+              </LanguageProvider>
+            </CartProvider>
+          </AppProvider>
+        </NeonAuthProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
