@@ -115,8 +115,8 @@ function App() {
                 <Route path="/download-data" element={<DownloadDataPage />} />
                 
                 {/* Admin routes */}
-                <Route path="/admin/login" element={<AdminLoginPage />} />
-                <Route path="/admin/neon-login" element={<NeonAdminLoginPage />} />
+                <Route path="/admin/login" element={<NeonAdminLoginPage />} />
+                <Route path="/admin/supabase-login" element={<AdminLoginPage />} />
                 <Route path="/admin/dev" element={<AdminDashboardPageDev />} />
                 <Route 
                   path="/admin" 
