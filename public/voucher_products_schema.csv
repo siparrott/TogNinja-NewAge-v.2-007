@@ -1,0 +1,24 @@
+column_name,data_type,is_nullable,column_default
+id,uuid,NO,gen_random_uuid()
+name,text,NO,
+description,text,YES,
+price,numeric,NO,
+original_price,numeric,YES,
+category,text,YES,
+session_duration,integer,YES,60
+session_type,text,YES,
+validity_period,integer,YES,365
+redemption_instructions,text,YES,
+terms_and_conditions,text,YES,
+image_url,text,YES,
+display_order,integer,YES,0
+featured,boolean,YES,false
+badge,text,YES,
+is_active,boolean,YES,true
+stock_limit,integer,YES,
+max_per_customer,integer,YES,5
+slug,text,YES,
+meta_title,text,YES,
+meta_description,text,YES,
+created_at,timestamp without time zone,YES,now()
+updated_at,timestamp without time zone,YES,now()

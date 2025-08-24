@@ -1,0 +1,3 @@
+id,name,email,phone,company,message,source,status,assigned_to,priority,tags,follow_up_date,value,created_at,updated_at
+b19a0de6-a3c2-4704-a117-a595ba8ae2f9,Simon Parrott,siparrott@yahoo.co.uk,004367763399210,,Test client,MANUAL,new,,medium,,,,Sat Jul 26 2025 09:13:19 GMT+0000 (Coordinated Universal Time),Sat Jul 26 2025 09:13:19 GMT+0000 (Coordinated Universal Time)
+4f94a48c-4640-4b18-b529-2c4dc9e820ec,Simon Parrott,siparrott@yahoo.co.uk,07707073510,,Test,KONTAKT,new,,medium,,,,Sat Jul 26 2025 12:37:20 GMT+0000 (Coordinated Universal Time),Sat Jul 26 2025 12:37:20 GMT+0000 (Coordinated Universal Time)
