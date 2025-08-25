@@ -14,8 +14,10 @@ import VoucherPersonalization from '@/components/VoucherPersonalization';
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
-const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_live_51LfKgtFphNBaSN5pDqOt7Y7SXFrmAJ8p8u2zzoiotyecB27A75XjKNNoU9OX16n8wtQIYZb7Fyr7BisVBQsBz36J00FtsuU2ko';
-const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+
+// Only load Stripe if we have a valid key
+const stripePromise = STRIPE_PUBLIC_KEY ? loadStripe(STRIPE_PUBLIC_KEY) : null;
 
 interface VoucherProduct {
   id: string;
@@ -315,6 +317,26 @@ const VoucherCheckoutPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Gutschein nicht gefunden</h1>
+          <Button onClick={() => navigate('/vouchers')} variant="outline">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Zurück zu den Gutscheinen
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if Stripe is available
+  if (!stripePromise) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Zahlungssystem wird eingerichtet
+          </h1>
+          <p className="text-gray-600 mb-4">
+            Unser Zahlungssystem wird gerade konfiguriert. Bitte versuchen Sie es später noch einmal oder kontaktieren Sie uns direkt.
+          </p>
           <Button onClick={() => navigate('/vouchers')} variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Zurück zu den Gutscheinen
