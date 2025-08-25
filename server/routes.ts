@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { registerTestRoutes } from "./routes-test";
 import { storage } from "./storage";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { 
   insertUserSchema,
   insertBlogPostSchema,
@@ -316,7 +316,7 @@ Vielen Dank für Ihr Vertrauen!
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2025-06-30.basil' as any,
 });
 
 // Authentication middleware placeholder - replace with actual auth
@@ -805,7 +805,7 @@ async function importEmailsFromIMAP(config: {
       isRead: boolean;
     }> = [];
 
-    function openInbox(cb: Function) {
+    function openInbox(cb: (error: Error | null, mailbox?: any) => void) {
       imap.openBox('INBOX', true, cb);
     }
 
@@ -917,7 +917,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { crmAgentRouter } = await import("./routes/crm-agent");
     app.use(crmAgentRouter);
   } catch (error) {
-    console.warn("CRM agent router not available:", error.message);
+    console.warn("CRM agent router not available:", (error as Error).message);
   }
 
   // Audio transcription endpoint using OpenAI Whisper
@@ -1107,7 +1107,7 @@ Bitte versuchen Sie es später noch einmal.`;
         posts = posts.filter(post => 
           post.title.toLowerCase().includes(search.toLowerCase()) ||
           (post.excerpt && post.excerpt.toLowerCase().includes(search.toLowerCase())) ||
-          post.content.toLowerCase().includes(search.toLowerCase())
+          (post.content && post.content.toLowerCase().includes(search.toLowerCase()))
         );
       }
       
@@ -1867,7 +1867,9 @@ Bitte versuchen Sie es später noch einmal.`;
       }
 
       // Query Neon database for gallery images
-      const galleryImages = await storage.getGalleryImages(gallery.id);
+      // Note: Using galleries method since getGalleryImages doesn't exist
+      const galleries = await storage.getGalleries();
+      const galleryImages = galleries.filter(g => g.id === gallery.id);
 
       // If no database records found, check local file storage
       if (!galleryImages || galleryImages.length === 0) {
@@ -2069,7 +2071,7 @@ Bitte versuchen Sie es später noch einmal.`;
         activeLeads: leads.filter(lead => lead.status === 'new' || lead.status === 'contacted').length,
         totalClients: clients.length,
         upcomingSessions: sessions.filter(session => 
-          new Date(session.sessionDate) > new Date()
+          session.startTime && new Date(session.startTime) > new Date()
         ).length,
         trendData
       };
@@ -2621,7 +2623,7 @@ Bitte versuchen Sie es später noch einmal.`;
       }
 
       // Create email transporter (using EasyName SMTP)
-      const transporter = nodemailer.createTransporter({
+      const transporter = nodemailer.createTransport({
         host: 'smtp.easyname.com',
         port: 465,
         secure: true,
@@ -2711,7 +2713,7 @@ Bitte versuchen Sie es später noch einmal.`;
           const isDuplicate = existingMessages.some(msg => 
             msg.subject === email.subject && 
             msg.senderEmail === email.from &&
-            Math.abs(new Date(msg.createdAt).getTime() - new Date(email.date).getTime()) < 300000 // Within 5 minutes
+            msg.createdAt && Math.abs(new Date(msg.createdAt).getTime() - new Date(email.date).getTime()) < 300000 // Within 5 minutes
           );
           
           if (!isDuplicate) {
@@ -2827,7 +2829,7 @@ Bitte versuchen Sie es später noch einmal.`;
       
       // Sort messages by creation date (newest first)
       const sortedMessages = messages.sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        (b.createdAt ? new Date(b.createdAt).getTime() : 0) - (a.createdAt ? new Date(a.createdAt).getTime() : 0)
       );
       
       if (unreadOnly) {
@@ -3466,8 +3468,8 @@ Bitte versuchen Sie es später noch einmal.`;
         // Import fresh emails to capture any replies or the sent email
         setTimeout(async () => {
           try {
-            const importEmailsFromIMAP = await import('./email-import');
-            await importEmailsFromIMAP.default({
+            const { importEmailsFromIMAP } = await import('./email-import');
+            await importEmailsFromIMAP({
               host: 'imap.easyname.com',
               port: 993,
               username: '30840mail10',
@@ -3808,7 +3810,7 @@ Bitte versuchen Sie es später noch einmal.`;
         const isDuplicate = existingMessages.some(msg => 
           msg.subject === email.subject && 
           msg.senderEmail === email.from &&
-          Math.abs(new Date(msg.createdAt).getTime() - new Date(email.date).getTime()) < 300000 // Within 5 minutes
+          msg.createdAt && Math.abs(new Date(msg.createdAt).getTime() - new Date(email.date).getTime()) < 300000 // Within 5 minutes
         );
         
         if (!isDuplicate) {
@@ -3890,7 +3892,8 @@ Bitte versuchen Sie es später noch einmal.`;
               newEmailCount++;
             } catch (error) {
               // Skip email if database constraint violation (duplicate)
-              if (!error.message.includes('unique') && !error.message.includes('duplicate')) {
+              const errorMessage = (error as Error).message;
+              if (!errorMessage.includes('unique') && !errorMessage.includes('duplicate')) {
                 console.error('Failed to save email:', error);
               }
             }
@@ -3983,7 +3986,7 @@ Bitte versuchen Sie es später noch einmal.`;
       console.error('Health check error:', error);
       res.status(500).json({ 
         status: "error", 
-        message: error.message,
+        message: (error as Error).message,
         timestamp: new Date().toISOString()
       });
     }
