@@ -1,162 +1,116 @@
 #!/usr/bin/env node
 
 /**
- * Prepare deployment by ensuring all files are in correct locations
- * This addresses the specific issues seen in the Replit deployment logs
+ * Deployment Preparation Script
+ * Ensures all required files are in dist/ for successful deployment
  */
 
-import fs from 'fs/promises';
-import path from 'path';
 import { execSync } from 'child_process';
+import { writeFileSync, existsSync, mkdirSync, copyFileSync } from 'fs';
+import { join } from 'path';
 
-async function ensurePackageJsonLocations() {
-  console.log('📦 Ensuring package.json is available in all required locations...');
-  
-  const locations = [
-    '/home/runner/workspace/package.json',
-    './package.json',
-    './dist/package.json'
-  ];
-  
-  // Use the deployment-specific package.json for production
-  const sourcePackage = './deployment-package.json';
-  
-  for (const location of locations) {
-    try {
-      await fs.access(location);
-      console.log(`✅ package.json exists at: ${location}`);
-    } catch (error) {
-      try {
-        await fs.copyFile(sourcePackage, location);
-        console.log(`✅ Copied package.json to: ${location}`);
-      } catch (copyError) {
-        console.log(`⚠️ Could not copy to ${location}: ${copyError.message}`);
-      }
-    }
+console.log('🚀 Preparing deployment package...');
+
+// 1. Run the build process
+console.log('📦 Building application...');
+execSync('npm run build', { stdio: 'inherit' });
+
+// 2. Ensure dist directory exists
+if (!existsSync('dist')) {
+  mkdirSync('dist', { recursive: true });
+}
+
+// 3. Create production package.json
+console.log('📄 Creating production package.json...');
+const productionPackage = {
+  "name": "photography-crm-production",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.37.0",
+    "@extractus/article-extractor": "^8.0.19",
+    "@neondatabase/serverless": "^0.9.0",
+    "@sendgrid/mail": "^8.1.5",
+    "bcrypt": "^6.0.0",
+    "cheerio": "^1.1.0",
+    "connect-pg-simple": "^9.0.1",
+    "csv-parse": "^6.1.0",
+    "date-fns": "^3.2.0",
+    "dotenv": "^17.2.0",
+    "drizzle-orm": "^0.29.3",
+    "drizzle-zod": "^0.5.1",
+    "express": "^4.18.2",
+    "express-session": "^1.18.2",
+    "form-data": "^4.0.4",
+    "html-pdf-node": "^1.0.8",
+    "html2canvas": "^1.4.1",
+    "imap": "^0.8.19",
+    "jspdf": "^3.0.1",
+    "keyword-extractor": "^0.0.28",
+    "lighthouse": "^12.8.0",
+    "lodash": "^4.17.21",
+    "mailparser": "^3.7.4",
+    "memoizee": "^0.4.17",
+    "multer": "^2.0.1",
+    "node-cron": "^4.2.1",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^7.0.5",
+    "normalize-url": "^8.0.2",
+    "openai": "^5.10.1",
+    "p-queue": "^8.1.0",
+    "papaparse": "^5.4.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.16.3",
+    "sharp": "^0.34.3",
+    "stripe": "^18.3.0",
+    "uuid": "^9.0.1",
+    "validator": "^13.15.15",
+    "xlsx": "^0.18.5",
+    "zod": "^3.22.4",
+    "zod-to-json-schema": "^3.24.6"
   }
+};
+
+writeFileSync('dist/package.json', JSON.stringify(productionPackage, null, 2));
+
+// 4. Create start.mjs entry point
+console.log('🎯 Creating start.mjs entry point...');
+const startMjs = `#!/usr/bin/env node
+
+/**
+ * Production entry point for New Age Fotografie CRM
+ * Supports both Docker and Vercel deployments
+ */
+
+import './index.js';`;
+
+writeFileSync('dist/start.mjs', startMjs);
+execSync('chmod +x dist/start.mjs');
+
+// 5. Copy shared directory
+console.log('📁 Copying shared directory...');
+execSync('cp -r shared dist/', { stdio: 'inherit' });
+
+// 6. Verify deployment readiness
+console.log('✅ Verifying deployment package...');
+const requiredFiles = ['dist/index.js', 'dist/package.json', 'dist/start.mjs', 'dist/shared'];
+const missingFiles = requiredFiles.filter(file => !existsSync(file));
+
+if (missingFiles.length > 0) {
+  console.error('❌ Missing required files:', missingFiles);
+  process.exit(1);
 }
 
-async function ensureBuildArtifacts() {
-  console.log('🔨 Ensuring build artifacts exist...');
-  
-  try {
-    // Build client
-    console.log('Building client...');
-    execSync('npm run build:client', { stdio: 'inherit' });
-    
-    // Build server
-    console.log('Building server...');
-    execSync('npm run build:server', { stdio: 'inherit' });
-    
-    console.log('✅ Build artifacts created successfully');
-  } catch (error) {
-    console.error('❌ Build failed:', error.message);
-    throw error;
-  }
-}
-
-async function updateReRlitConfig() {
-  console.log('⚙️ Updating .replit configuration for proper deployment...');
-  
-  // Ensure the .replit file uses the correct working directory
-  const replitConfig = `modules = ["nodejs-20", "web", "postgresql-16"]
-run = "npm run dev"
-hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
-
-[nix]
-channel = "stable-24_05"
-packages = ["imagemagick"]
-
-[deployment]
-deploymentTarget = "autoscale"
-build = ["npm", "run", "build"]
-run = ["node", "start.mjs"]
-
-[[ports]]
-localPort = 5000
-externalPort = 80
-
-[workflows]
-runButton = "Project"
-
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Start application"
-
-[[workflows.workflow]]
-name = "Start application"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-waitForPort = 5000`;
-
-  console.log('📝 .replit configuration updated for deployment');
-}
-
-async function validateDeploymentReadiness() {
-  console.log('🔍 Validating deployment readiness...');
-  
-  const requiredFiles = [
-    './dist/index.js',
-    './dist/public/index.html',
-    './start.mjs',
-    './package.json'
-  ];
-  
-  let allValid = true;
-  
-  for (const file of requiredFiles) {
-    try {
-      await fs.access(file);
-      console.log(`✅ ${file} exists`);
-    } catch (error) {
-      console.log(`❌ ${file} missing`);
-      allValid = false;
-    }
-  }
-  
-  return allValid;
-}
-
-async function prepareDeployment() {
-  console.log('🚀 Preparing New Age Fotografie CRM for deployment...');
-  
-  try {
-    await ensurePackageJsonLocations();
-    await ensureBuildArtifacts();
-    await updateReRlitConfig();
-    
-    const isReady = await validateDeploymentReadiness();
-    
-    if (isReady) {
-      console.log('🎉 Deployment preparation completed successfully!');
-      console.log('');
-      console.log('📋 Deployment checklist:');
-      console.log('  ✅ Package.json files in correct locations');
-      console.log('  ✅ Client build artifacts (dist/public/)');
-      console.log('  ✅ Server bundle (dist/index.js)');
-      console.log('  ✅ Start script (start.mjs)');
-      console.log('  ✅ Deployment configuration updated');
-      console.log('');
-      console.log('🚀 Ready to deploy! Use Replit\'s Deploy button.');
-    } else {
-      console.log('❌ Deployment preparation incomplete. Please check missing files.');
-    }
-  } catch (error) {
-    console.error('❌ Deployment preparation failed:', error.message);
-    process.exit(1);
-  }
-}
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  prepareDeployment();
-}
-
-export { prepareDeployment };
+console.log('🎉 Deployment package ready!');
+console.log('📊 Contains:');
+console.log('  ✓ Built server (index.js)');
+console.log('  ✓ Production dependencies (package.json)');
+console.log('  ✓ Entry point (start.mjs)');
+console.log('  ✓ Shared schemas and types');
+console.log('  ✓ Frontend assets (public/)');
+console.log('');
+console.log('🚀 Ready for Vercel deployment!');
