@@ -4,6 +4,7 @@
   "description": "Live demo of Photography CRM SaaS platform",
   "type": "module",
   "scripts": {
+    "start": "node dist/index.js",
     "dev": "NODE_ENV=development DEMO_MODE=true tsx server/index.ts",
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build",

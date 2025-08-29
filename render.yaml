@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: togninja-newage
+    env: node
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: togninja-newage
+          property: port
+      # Add your environment variables from your .env file
+      - key: DATABASE_URL
+        sync: false  # You'll set this in Render dashboard
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+    autoDeploy: true
+    rootDir: .
+    buildFilter:
+      paths:
+        - "**/*"
+      ignoredPaths:
+        - node_modules/**
+        - .git/**
+        - "*.md"
+        - "*.txt"
